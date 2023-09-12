@@ -17,6 +17,7 @@ RUN apk update && apk upgrade && apk add \
 RUN docker-php-ext-install pdo pdo_mysql zip exif pcntl
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+RUN npm i -g pnpm
 
 USER root
 
