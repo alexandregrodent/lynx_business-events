@@ -1,0 +1,6 @@
+FROM mariadb:latest
+
+COPY ./config /etc/mysql/conf.d
+COPY --chown=777 ./init /docker-entrypoint-initdb.d
+
+EXPOSE 3306

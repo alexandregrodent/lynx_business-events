@@ -1,0 +1,6 @@
+FROM nginx:alpine
+
+COPY ./nginx/config /etc/nginx/conf.d
+
+WORKDIR /var/www/inertia
+COPY ./src .

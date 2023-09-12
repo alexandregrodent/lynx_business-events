@@ -1,0 +1,59 @@
+version: '3.9'
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile
+    container_name: "${CONTAINER_PREFIX}_nginx"
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "${NGINX_PORT}:8000"
+    depends_on:
+      - php
+      - mariadb
+    networks:
+      - inertia
+
+  php:
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile.prod
+    container_name: "${CONTAINER_PREFIX}_php"
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www/inertia
+    ports:
+      - "${PHP_PORT}:9000"
+    networks:
+      - laravel
+
+  redis:
+    image: redis:alpine
+    container_name: "${CONTAINER_PREFIX}_redis"
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - inertia
+
+  mariadb:
+    build:
+        context: ./mariadb
+        dockerfile: ./Dockerfile
+    container_name: "${CONTAINER_PREFIX}_mariadb"
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "${DB_PORT}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - inertia
+
+networks:
+  inertia:
+    driver: bridge
