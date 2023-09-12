@@ -25,11 +25,6 @@ down:
 	docker compose -f docker-compose.yml down
 	make start_services
 
-purge:
-	docker rmi -f $(CONTAINER_PREFIX)
-	sudo chmod -R +rwx postgresql
-	sudo rm -rf postgresql
-
 ex:
 	docker exec -it $(CONTAINER_PREFIX)_php /bin/sh
 
