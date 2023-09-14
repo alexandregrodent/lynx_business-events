@@ -3,6 +3,10 @@
 ## Commands
 - `make build` Build the containers
 - `make up` Start the containers
+- `make ex` Enter the php container
+- - `pnpm install` Install the dependencies
+- - `pnpm build` Build vuejs
+- - `exit` Exit the php container
 - `make down` Stop the containers
 
 Or manually but you will need to replace environment variables in the docker-compose.yml file:
