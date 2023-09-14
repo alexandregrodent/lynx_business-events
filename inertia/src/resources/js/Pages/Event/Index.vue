@@ -1,32 +1,32 @@
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import { router } from '@inertiajs/vue3'
-import moment from 'moment'
+import { ref, reactive } from 'vue';
+import { router } from '@inertiajs/vue3';
+import moment from 'moment';
 
-import SecondaryButton from '../../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Components/SecondaryButton.vue'
-import DangerButton from '../../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Components/DangerButton.vue'
-import AppLayout from '@/Layouts/AppLayout.vue'
-import ConfirmationModal from '@/Components/ConfirmationModal.vue'
-import DialogModal from '@/Components/DialogModal.vue'
-import PrimaryButton from '@/Components/PrimaryButton.vue'
-import DateRangePicker from '@/Components/DateRangePicker.vue'
-import DateInput from '@/Components/DateInput.vue'
-import TextInput from '@/Components/TextInput.vue'
+import SecondaryButton from '../../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Components/SecondaryButton.vue';
+import DangerButton from '../../../../vendor/laravel/jetstream/stubs/inertia/resources/js/Components/DangerButton.vue';
+import AppLayout from '@/Layouts/AppLayout.vue';
+import ConfirmationModal from '@/Components/ConfirmationModal.vue';
+import DialogModal from '@/Components/DialogModal.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import DateRangePicker from '@/Components/DateRangePicker.vue';
+import DateInput from '@/Components/DateInput.vue';
+import TextInput from '@/Components/TextInput.vue';
 
 type Event = {
-    id: number
-    title: string
-    start_date: string
-    end_date: string
-}
+    id: number;
+    title: string;
+    start_date: string;
+    end_date: string;
+};
 
 const props = defineProps({
     events: {
         type: Array<{
-            id: number
-            title: string
-            start_date: string
-            end_date: string
+            id: number;
+            title: string;
+            start_date: string;
+            end_date: string;
         }>,
         default: [],
     },
@@ -34,94 +34,94 @@ const props = defineProps({
         type: String,
         default: 'upcoming',
     },
-})
+});
 
-const selectedOption = ref(props.currentFilter)
+const selectedOption = ref(props.currentFilter);
 // Actions IDs
-const editingEventId = ref(0)
-const deletingEventId = ref(0)
+const editingEventId = ref(0);
+const deletingEventId = ref(0);
 // Modals
-const creatingEvent = ref(false)
-const editingEvent = ref(false)
-const deletingEvent = ref(false)
+const creatingEvent = ref(false);
+const editingEvent = ref(false);
+const deletingEvent = ref(false);
 
 const form = reactive({
     title: '',
     startDate: '',
     endDate: '',
-})
+});
+
+const clearData = () => {
+    form.title = '';
+    form.startDate = '';
+    form.endDate = '';
+    editingEventId.value = 0;
+    deletingEventId.value = 0;
+    editingEvent.value = false;
+    creatingEvent.value = false;
+    deletingEvent.value = false;
+    selectedOption.value = 'upcoming';
+};
 
 const prepareEditingEvent = (id: number) => {
-    editingEvent.value = true
-    editingEventId.value = id
+    editingEvent.value = true;
+    editingEventId.value = id;
 
-    const event = props.events.find((event) => event.id === id)
-    form.title = event.title
-    form.startDate = formatDateUS(event.start_date)
-    form.endDate = formatDateUS(event.end_date)
-}
+    const event = props.events.find((event) => event.id === id);
+    form.title = event.title;
+    form.startDate = formatDateUS(event.start_date);
+    form.endDate = formatDateUS(event.end_date);
+};
 
 const prepareDeletingEvent = (id: number) => {
-    deletingEvent.value = true
-    deletingEventId.value = id
-}
+    deletingEvent.value = true;
+    deletingEventId.value = id;
+};
 
 const fetchUpcomingEvents = () => {
-    router.get('/events')
-    selectedOption.value = 'upcoming'
-}
+    router.get('/events');
+    selectedOption.value = 'upcoming';
+};
 
 const fetchAllEvents = () => {
-    router.get('/events', { all: true })
-    selectedOption.value = 'all'
-}
+    router.get('/events', { all: true });
+    selectedOption.value = 'all';
+};
 
 const filterByDateRange = (dates: Array<string>) => {
-    router.get(`/events?start_date=${dates[0]}&end_date=${dates[1]}`)
-}
+    router.get(`/events?start_date=${dates[0]}&end_date=${dates[1]}`);
+};
 
 const createEvent = () => {
     router.post('/events', {
         title: form.title,
         start_date: form.startDate,
         end_date: form.endDate,
-    })
-    form.title = ''
-    form.startDate = ''
-    form.endDate = ''
-    creatingEvent.value = false
-    selectedOption.value = 'upcoming'
-}
+    });
+    clearData();
+};
 
 const editEvent = (id: number) => {
     router.put(`/events/${id}`, {
         title: form.title,
         start_date: form.startDate,
         end_date: form.endDate,
-    })
-    editingEventId.value = null
-    editingEvent.value = false
-    form.title = ''
-    form.startDate = ''
-    form.endDate = ''
-    creatingEvent.value = false
-    selectedOption.value = 'upcoming'
-}
+    });
+    clearData();
+};
 
 const deleteEvent = (id: number) => {
-    router.delete(`/events/${id}`)
-    deletingEvent.value = false
-    deletingEventId.value = null
-    selectedOption.value = 'upcoming'
-}
+    router.delete(`/events/${id}`);
+    clearData();
+};
 
 const formatDateEU = (date) => {
-    return moment(date).format('DD/MM/YYYY')
-}
+    return moment(date).format('DD/MM/YYYY');
+};
 
 const formatDateUS = (date) => {
-    return moment(date).format('MM-DD-YYYY')
-}
+    return moment(date).format('MM-DD-YYYY');
+};
 </script>
 
 <template>
@@ -302,7 +302,9 @@ const formatDateUS = (date) => {
                     required=""
                     placeholder="Title"
                 />
-                <div class="flex flex-col sm:flex-row gap-2 justify-center items-center w-full">
+                <div
+                    class="flex flex-col sm:flex-row gap-2 justify-center items-center w-full"
+                >
                     <DateInput
                         v-model="form.startDate"
                         class="w-full"
@@ -342,7 +344,9 @@ const formatDateUS = (date) => {
                     required=""
                     placeholder="Title"
                 />
-                <div class="flex flex-col sm:flex-row gap-2 justify-center items-center w-full">
+                <div
+                    class="flex flex-col sm:flex-row gap-2 justify-center items-center w-full"
+                >
                     <DateInput
                         v-model="form.startDate"
                         class="w-full"

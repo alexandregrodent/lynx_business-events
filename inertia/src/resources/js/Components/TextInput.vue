@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed } from 'vue';
 
 interface PropsType {
-    modelValue?: string
-    [key: string]: string | undefined
+    modelValue?: string;
+    [key: string]: string | undefined;
 }
 
-const props = defineProps<PropsType>()
+const props = defineProps<PropsType>();
 
-defineEmits(['update:modelValue'])
+defineEmits(['update:modelValue']);
 
-const input = ref(null)
+const input = ref(null);
 
 onMounted(() => {
     if (input.value.hasAttribute('autofocus')) {
-        input.value.focus()
+        input.value.focus();
     }
-})
+});
 
 const inputAttributes = computed(() => {
-    const { modelValue, ...otherProps } = props
-    return otherProps
-})
+    const { modelValue, ...otherProps } = props;
+    return otherProps;
+});
 
-defineExpose({ focus: () => input.value.focus() })
+defineExpose({ focus: () => input.value.focus() });
 </script>
 
 <template>

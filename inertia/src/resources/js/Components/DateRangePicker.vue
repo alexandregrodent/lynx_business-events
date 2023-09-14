@@ -1,21 +1,21 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
-import DateInput from '@/Components/DateInput.vue'
+import { reactive } from 'vue';
+import DateInput from '@/Components/DateInput.vue';
 
-const emit = defineEmits(['date-range-selected'])
+const emit = defineEmits(['date-range-selected']);
 
 const state = reactive({
     startDate: '',
     endDate: '',
-})
+});
 
 const updateDate = (name: string, value: string) => {
-    state[name] = value
-}
+    state[name] = value;
+};
 
 const applyDateRange = () => {
-    emit('date-range-selected', [state.startDate, state.endDate])
-}
+    emit('date-range-selected', [state.startDate, state.endDate]);
+};
 </script>
 
 <template>
