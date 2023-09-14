@@ -14,6 +14,13 @@ import DateRangePicker from "@/Components/DateRangePicker.vue";
 import DateInput from "@/Components/DateInput.vue";
 import TextInput from "@/Components/TextInput.vue";
 
+type Event = {
+  id: number,
+  title: string,
+  start_date: string,
+  end_date: string
+}
+
 const props = defineProps({
   events: {
     type: Array<{
@@ -31,11 +38,13 @@ const props = defineProps({
 });
 
 const selectedOption = ref(props.currentFilter);
-const confirmingDeletingEvent = ref(false);
-const deletingEventId = ref(null);
+// Actions IDs
+const editingEventId = ref(0);
+const deletingEventId = ref(0);
+// Modals
 const creatingEvent = ref(false);
 const editingEvent = ref(false);
-const editingEventId = ref(null);
+const deletingEvent = ref(false);
 
 const form = reactive({
   title: '',
@@ -43,22 +52,19 @@ const form = reactive({
   endDate: '',
 });
 
-const updateDate = (name: string, value: string) => {
-  form[name] = value;
-};
-
-const confirmDeletingEvent = (id: number) => {
-  confirmingDeletingEvent.value = true;
-  deletingEventId.value = id;
-};
-
 const prepareEditingEvent = (id: number) => {
-  editingEvent.value = true;
-  editingEventId.value = id;
-  const event = props.events.find(event => event.id === id);
-  form.title = event.title;
-  form.startDate = formatDateUS(event.start_date);
-  form.endDate = formatDateUS(event.end_date);
+    editingEvent.value = true;
+    editingEventId.value = id;
+
+    const event = props.events.find(event => event.id === id);
+    form.title = event.title;
+    form.startDate = formatDateUS(event.start_date);
+    form.endDate = formatDateUS(event.end_date);
+};
+
+const prepareDeletingEvent = (id: number) => {
+    deletingEvent.value = true;
+    deletingEventId.value = id;
 };
 
 const fetchUpcomingEvents = () => {
@@ -105,7 +111,7 @@ const editEvent = (id: number) => {
 
 const deleteEvent = (id: number) => {
   router.delete(`/events/${id}`);
-  confirmingDeletingEvent.value = false;
+    deletingEvent.value = false;
   deletingEventId.value = null;
   selectedOption.value = 'upcoming';
 }
@@ -172,7 +178,7 @@ const formatDateUS = (date) => {
                 </th>
               </tr>
               </thead>
-              <tbody v-for="event in events" :key="event.id">
+              <tbody v-for="event in events as Event[]" :key="event.id">
               <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                   {{ event.title }}
@@ -185,7 +191,7 @@ const formatDateUS = (date) => {
                 </td>
                 <td class="flex gap-4 px-6 py-4">
                   <button @click="prepareEditingEvent(event.id)" class="text-yellow-400">Edit</button>
-                  <button @click="confirmDeletingEvent(event.id)" class="text-red-500">Delete</button>
+                  <button @click="prepareDeletingEvent(event.id)" class="text-red-500">Delete</button>
                 </td>
               </tr>
               </tbody>
@@ -200,7 +206,7 @@ const formatDateUS = (date) => {
   </AppLayout>
 
   <!-- Delete Event Confirmation Modal -->
-  <ConfirmationModal :show="confirmingDeletingEvent" @close="confirmingDeletingEvent = false">
+  <ConfirmationModal :show="deletingEvent" @close="deletingEvent = false">
     <template #title>
       Delete event
     </template>
@@ -210,11 +216,11 @@ const formatDateUS = (date) => {
     </template>
 
     <template #footer>
-      <SecondaryButton @click="confirmingDeletingEvent = false">
+      <SecondaryButton @click="deletingEvent = false">
         Cancel
       </SecondaryButton>
 
-      <DangerButton @click="deleteEvent(deletingEventId)">
+      <DangerButton class="ml-3" @click="deleteEvent(deletingEventId as number)">
         Delete
       </DangerButton>
     </template>
@@ -252,10 +258,13 @@ const formatDateUS = (date) => {
     </template>
 
     <template #content>
-      <div class="flex flex-col gap-1 justify-center items-center mt-4">
-        <TextInput v-model="form.title" type="text" class="mt-1 block w-full" required="" placeholder="Title" />
-        <DateInput v-model="form.startDate" class="w-full" required="" />
-        <DateInput v-model="form.endDate" class="w-full" required="" />
+      <div class="flex flex-col gap-2 justify-center items-center mt-4">
+        <TextInput v-model="form.title" type="text" class="block w-full mt-1" required="" placeholder="Title" />
+        <div class="flex gap-2 items-center w-full">
+            <DateInput v-model="form.startDate" class="w-full" required="" />
+            to
+            <DateInput v-model="form.endDate" class="w-full" required="" />
+        </div>
       </div>
     </template>
 
@@ -264,7 +273,7 @@ const formatDateUS = (date) => {
         Cancel
       </SecondaryButton>
 
-      <PrimaryButton class="ml-3" @click="editEvent(editingEventId)">
+      <PrimaryButton class="ml-3" @click="editEvent(editingEventId as number)">
         Update
       </PrimaryButton>
     </template>
