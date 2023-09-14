@@ -294,20 +294,27 @@ const formatDateUS = (date) => {
         <template #title> Create Event </template>
 
         <template #content>
-            <div class="flex flex-col gap-1 justify-center items-center mt-4">
+            <div class="flex flex-col gap-4 justify-center items-center mt-4">
                 <TextInput
                     v-model="form.title"
                     type="text"
-                    class="mt-1 block w-full"
+                    class="block w-full mt-1"
                     required=""
                     placeholder="Title"
                 />
-                <DateInput
-                    v-model="form.startDate"
-                    class="w-full"
-                    required=""
-                />
-                <DateInput v-model="form.endDate" class="w-full" required="" />
+                <div class="flex flex-col sm:flex-row gap-2 justify-center items-center w-full">
+                    <DateInput
+                        v-model="form.startDate"
+                        class="w-full"
+                        required=""
+                    />
+                    to
+                    <DateInput
+                        v-model="form.endDate"
+                        class="w-full"
+                        required=""
+                    />
+                </div>
             </div>
         </template>
 
@@ -327,7 +334,7 @@ const formatDateUS = (date) => {
         <template #title> Edit Event </template>
 
         <template #content>
-            <div class="flex flex-col gap-2 justify-center items-center mt-4">
+            <div class="flex flex-col gap-4 justify-center items-center mt-4">
                 <TextInput
                     v-model="form.title"
                     type="text"
@@ -335,7 +342,7 @@ const formatDateUS = (date) => {
                     required=""
                     placeholder="Title"
                 />
-                <div class="flex gap-2 items-center w-full">
+                <div class="flex flex-col sm:flex-row gap-2 justify-center items-center w-full">
                     <DateInput
                         v-model="form.startDate"
                         class="w-full"
