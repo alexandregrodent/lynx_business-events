@@ -37,9 +37,8 @@ const props = defineProps({
 });
 
 const selectedOption = ref(props.currentFilter);
-// Actions IDs
-const editingEventId = ref(0);
-const deletingEventId = ref(0);
+
+const selectedEventId = ref(0);
 // Modals
 const creatingEvent = ref(false);
 const editingEvent = ref(false);
@@ -55,8 +54,7 @@ const clearData = () => {
     form.title = '';
     form.startDate = '';
     form.endDate = '';
-    editingEventId.value = 0;
-    deletingEventId.value = 0;
+    selectedEventId.value = 0;
     editingEvent.value = false;
     creatingEvent.value = false;
     deletingEvent.value = false;
@@ -65,17 +63,17 @@ const clearData = () => {
 
 const prepareEditingEvent = (id: number) => {
     editingEvent.value = true;
-    editingEventId.value = id;
+    selectedEventId.value = id;
 
     const event = props.events.find((event) => event.id === id);
     form.title = event.title;
-    form.startDate = formatDateUS(event.start_date);
-    form.endDate = formatDateUS(event.end_date);
+    form.startDate = formatDateHTML(event.start_date);
+    form.endDate = formatDateHTML(event.end_date);
 };
 
 const prepareDeletingEvent = (id: number) => {
     deletingEvent.value = true;
-    deletingEventId.value = id;
+    selectedEventId.value = id;
 };
 
 const fetchUpcomingEvents = () => {
@@ -115,12 +113,12 @@ const deleteEvent = (id: number) => {
     clearData();
 };
 
-const formatDateEU = (date) => {
+const formatDateFR = (date) => {
     return moment(date).format('DD/MM/YYYY');
 };
 
-const formatDateUS = (date) => {
-    return moment(date).format('MM-DD-YYYY');
+const formatDateHTML = (date) => {
+    return moment(date).format('YYYY-MM-DD');
 };
 </script>
 
@@ -230,10 +228,10 @@ const formatDateUS = (date) => {
                                         {{ event.title }}
                                     </th>
                                     <td class="px-6 py-4">
-                                        {{ formatDateEU(event.start_date) }}
+                                        {{ formatDateFR(event.start_date) }}
                                     </td>
                                     <td class="px-6 py-4">
-                                        {{ formatDateEU(event.end_date) }}
+                                        {{ formatDateFR(event.end_date) }}
                                     </td>
                                     <td class="flex gap-4 px-6 py-4">
                                         <button
@@ -268,7 +266,7 @@ const formatDateUS = (date) => {
     </AppLayout>
 
     <!-- Delete Event Confirmation Modal -->
-    <ConfirmationModal :show="deletingEvent" @close="deletingEvent = false">
+    <ConfirmationModal :show="deletingEvent" @close="clearData()">
         <template #title> Delete event </template>
 
         <template #content>
@@ -282,7 +280,7 @@ const formatDateUS = (date) => {
 
             <DangerButton
                 class="ml-3"
-                @click="deleteEvent(deletingEventId as number)"
+                @click="deleteEvent(selectedEventId as number)"
             >
                 Delete
             </DangerButton>
@@ -290,7 +288,7 @@ const formatDateUS = (date) => {
     </ConfirmationModal>
 
     <!-- Create Event Modal -->
-    <DialogModal :show="creatingEvent" @close="creatingEvent = false">
+    <DialogModal :show="creatingEvent" @close="clearData()">
         <template #title> Create Event </template>
 
         <template #content>
@@ -332,7 +330,7 @@ const formatDateUS = (date) => {
     </DialogModal>
 
     <!-- Edit Event Modal -->
-    <DialogModal :show="editingEvent" @close="editingEvent = false">
+    <DialogModal :show="editingEvent" @close="clearData()">
         <template #title> Edit Event </template>
 
         <template #content>
@@ -369,7 +367,7 @@ const formatDateUS = (date) => {
 
             <PrimaryButton
                 class="ml-3"
-                @click="editEvent(editingEventId as number)"
+                @click="editEvent(selectedEventId as number)"
             >
                 Update
             </PrimaryButton>
