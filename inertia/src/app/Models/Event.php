@@ -17,6 +17,6 @@ class Event extends Model
 
     public function scopeDateRange($query, $startDate, $endDate) {
         return $query->whereBetween('start_date', [$startDate, $endDate])
-            ->orWhereBetween('end_date', [$startDate, $endDate]);
+            ->whereBetween('end_date', [$startDate, $endDate]);
     }
 }
