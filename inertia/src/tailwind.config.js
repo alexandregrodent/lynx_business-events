@@ -12,17 +12,12 @@ export default {
         './storage/framework/views/*.php',
         './node_modules/flowbite-vue/**/*.{js,jsx,ts,tsx}',
         './node_modules/flowbite/**/*.js',
-        './node_modules/vue-tailwind-datepicker/**/*.js',
         './resources/views/**/*.blade.php',
         './resources/js/**/*.vue',
     ],
 
     theme: {
         extend: {
-            colors: {
-                "vtd-primary": colors.sky,
-                "vtd-secondary": colors.gray,
-            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },

@@ -32,9 +32,7 @@
     },
     "dependencies": {
         "flowbite": "^1.8.1",
-        "flowbite-datepicker": "^1.2.2",
         "flowbite-vue": "0.0.17-next.3",
-        "moment": "^2.29.4",
-        "vue-tailwind-datepicker": "^1.4.6"
+        "moment": "^2.29.4"
     }
 }
