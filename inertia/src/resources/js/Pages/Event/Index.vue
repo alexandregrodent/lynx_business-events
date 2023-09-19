@@ -9,7 +9,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import ConfirmationModal from '@/Components/ConfirmationModal.vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import DateRangePicker from '@/Components/DateRangePicker.vue';
+import DateRangePicker from '@/Components/DateRangePicker2.vue';
 import DateInput from '@/Components/DateInput.vue';
 import TextInput from '@/Components/TextInput.vue';
 
@@ -114,12 +114,13 @@ const deleteEvent = (id: number) => {
 };
 
 const formatDateFR = (date) => {
-    return moment(date).format('DD/MM/YYYY');
+    return date ? moment(date).format('DD/MM/YYYY') : '';
 };
 
-const formatDateHTML = (date) => {
-    return moment(date).format('YYYY-MM-DD');
+const formatDateHTML = (date: Date | null) => {
+    return date ? moment(date).format('YYYY-MM-DD') : '';
 };
+
 </script>
 
 <template>
@@ -134,7 +135,7 @@ const formatDateHTML = (date) => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div
-                        class="relative overflow-x-auto shadow-md sm:rounded-lg p-4"
+                        class="overflow-x-auto shadow-md sm:rounded-lg p-4"
                     >
                         <div class="flex items-center justify-between p-1">
                             <div class="mb-1">
